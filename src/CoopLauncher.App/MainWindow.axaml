@@ -4,6 +4,7 @@
         x:Class="CoopLauncher.App.MainWindow"
         x:DataType="vm:MainViewModel"
         Title="Dead Cells Co-op"
+        Icon="/Assets/launcher.ico"
         Width="1000" Height="700" CanResize="False"
         WindowStartupLocation="CenterScreen"
         ExtendClientAreaToDecorationsHint="True"

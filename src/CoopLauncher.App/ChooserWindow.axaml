@@ -4,6 +4,7 @@
         x:Class="CoopLauncher.App.ChooserWindow"
         x:DataType="vm:ChooserViewModel"
         Title="Dead Cells"
+        Icon="/Assets/launcher.ico"
         Width="1000" Height="600" CanResize="False"
         WindowStartupLocation="CenterScreen"
         ExtendClientAreaToDecorationsHint="True"

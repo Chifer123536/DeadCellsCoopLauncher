@@ -48,6 +48,9 @@ public sealed partial class MainViewModel : ObservableObject
     InstallInspection? _inspection;
     LauncherManifest? _manifest;
     bool _manifestFailed;
+    DateTime _manifestCheckedAt = DateTime.MinValue;
+    static readonly TimeSpan ManifestMaxAge = TimeSpan.FromMinutes(10);
+    static readonly TimeSpan ManifestActionAge = TimeSpan.FromSeconds(60);
     PrimaryAction _action;
     DateTime _uninstallArmedUntil;
     bool _suppressModeWrite;
@@ -90,7 +93,7 @@ public sealed partial class MainViewModel : ObservableObject
         _timer.Tick += async (_, _) =>
         {
             if (!Busy)
-                await RefreshAsync(fetchManifest: false);
+                await RefreshAsync(fetchManifest: ManifestOlderThan(ManifestMaxAge));
         };
         _ = InitializeAsync();
     }
@@ -156,8 +159,11 @@ public sealed partial class MainViewModel : ObservableObject
         _layout = _game == null ? null : new InstallLayout(_game.GameDir);
     }
 
+    bool ManifestOlderThan(TimeSpan age) => DateTime.UtcNow - _manifestCheckedAt > age;
+
     async Task FetchManifestAsync()
     {
+        _manifestCheckedAt = DateTime.UtcNow;
         try
         {
             using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(15));
@@ -298,7 +304,7 @@ public sealed partial class MainViewModel : ObservableObject
                 await ChooseFolderAsync();
                 break;
             case PrimaryAction.Play:
-                LaunchViaSteam(LaunchMode.Coop);
+                await LaunchViaSteamAsync(LaunchMode.Coop);
                 break;
             case PrimaryAction.Install:
             case PrimaryAction.Update:
@@ -309,15 +315,24 @@ public sealed partial class MainViewModel : ObservableObject
     }
 
     [RelayCommand]
-    void PlayCoop() => LaunchViaSteam(LaunchMode.Coop);
+    Task PlayCoopAsync() => LaunchViaSteamAsync(LaunchMode.Coop);
 
     [RelayCommand]
-    void PlayVanilla() => LaunchViaSteam(LaunchMode.Vanilla);
+    Task PlayVanillaAsync() => LaunchViaSteamAsync(LaunchMode.Vanilla);
 
-    void LaunchViaSteam(LaunchMode mode)
+    async Task LaunchViaSteamAsync(LaunchMode mode)
     {
+        if (_layout == null || Busy || _action != PrimaryAction.Play)
+            return;
+        if (ManifestOlderThan(ManifestActionAge))
+        {
+            await RefreshAsync(fetchManifest: true);
+            if (_action != PrimaryAction.Play)
+                return;
+        }
+
         var layout = _layout;
-        if (layout == null || Busy || _action != PrimaryAction.Play)
+        if (layout == null || Busy)
             return;
         try
         {
@@ -374,9 +389,23 @@ public sealed partial class MainViewModel : ObservableObject
                 await Prerequisites.InstallAsync(PrerequisiteKind.VcRedist, Http, LauncherPaths.CacheDir, downloadProgress, CancellationToken.None);
             }
 
+            if (ManifestOlderThan(ManifestActionAge))
+                await FetchManifestAsync();
             var manifest = _manifest;
+            if (manifest != null && _action == PrimaryAction.Update)
+            {
+                var fresh = await Task.Run(() => ModInstaller.Inspect(layout));
+                if (!fresh.NeedsUpdate(manifest))
+                {
+                    LauncherLog.Info($"Update skipped: installed mod already matches {manifest.Mod.Version}");
+                    _inspection = fresh;
+                    ShowInfo(t.Done);
+                    return;
+                }
+            }
             if (manifest != null)
             {
+                LauncherLog.Info($"Install mod {manifest.Mod.Version} / DCCM {manifest.Dccm.Version}");
                 var progress = new Progress<InstallProgress>(ReportInstall);
                 var downloader = new Downloader(Http);
                 await Task.Run(() => ModInstaller.InstallAsync(layout, manifest, downloader, LauncherPaths.CacheDir, OpenChooser, progress, CancellationToken.None));

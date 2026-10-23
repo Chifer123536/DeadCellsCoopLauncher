@@ -7,6 +7,7 @@
     <AssemblyTitle>Dead Cells Co-op</AssemblyTitle>
     <RootNamespace>CoopLauncher.App</RootNamespace>
     <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>Assets\launcher.ico</ApplicationIcon>
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
     <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
@@ -22,6 +23,9 @@
     <PackageReference Include="Avalonia.Desktop" Version="11.3.22" />
     <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.22" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
+  </ItemGroup>
+  <ItemGroup>
+    <AvaloniaResource Include="Assets\launcher.ico" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CoopLauncher.Core\CoopLauncher.Core.csproj" />
