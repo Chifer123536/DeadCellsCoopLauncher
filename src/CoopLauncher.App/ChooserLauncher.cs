@@ -98,8 +98,9 @@ static class ChooserLauncher
         var layout = new InstallLayout(gameDir);
         var settings = ChooserSettingsStore.Read(layout.ChooserDir);
         var session = new ChooserSession(layout, settings, Strings.For(settings.Language), ChooserPlan.GameArguments(Environment.CommandLine));
-        var start = ChooserPlan.Decide(session.Args, settings.LaunchMode, (GetAsyncKeyState(VK_SHIFT) & 0x8000) != 0);
-        LauncherLog.Info($"Chooser {AppInfo.Version}: {start}, remembered {settings.LaunchMode}");
+        var requested = LaunchRequestStore.Take(layout.ChooserDir, DateTimeOffset.UtcNow);
+        var start = ChooserPlan.Decide(session.Args, settings.LaunchMode, (GetAsyncKeyState(VK_SHIFT) & 0x8000) != 0, requested);
+        LauncherLog.Info($"Chooser {AppInfo.Version}: {start}, remembered {settings.LaunchMode}, from launcher {requested?.ToString() ?? "-"}");
 
         if (start == ChooserStart.Vanilla)
         {
@@ -112,7 +113,8 @@ static class ChooserLauncher
             session.Notice = session.CoopProblem();
             if (session.Notice == null)
             {
-                session.PendingUpdate = session.FindUpdateAsync(SilentCheckTimeout, CancellationToken.None).GetAwaiter().GetResult();
+                if (requested != LaunchMode.Coop)
+                    session.PendingUpdate = session.FindUpdateAsync(SilentCheckTimeout, CancellationToken.None).GetAwaiter().GetResult();
                 if (session.PendingUpdate == null)
                     return Launch(session, LaunchMode.Coop);
             }
@@ -173,7 +175,8 @@ static class ChooserLauncher
  * ═══════════════════════════════════════
  *  Тот же exe лаунчера, скопированный вместо deadcells.exe, — его запускает Steam по «Играть».
  *  Режим выбора включается, если процесс называется deadcells.exe (или первый аргумент --chooser).
- *  План (ChooserPlan): +connect_lobby → кооп без окна; Shift → окно; запомненный режим → сразу он; иначе окно.
+ *  План (ChooserPlan): +connect_lobby → кооп без окна; выбор из лаунчера (next-launch.json, одноразовый) → он без окна;
+ *  Shift → окно; запомненный режим → сразу он; иначе окно. Кооп из лаунчера не перепроверяет манифест (лаунчер уже проверил).
  *  Обычная без окна: только проверка deadcells.vanilla.exe, без сети и без Avalonia.
  *  Кооп без окна: мод/DCCM/.NET/VC++ на месте → manifest.json (≤ 5 с, ошибка сети = играем как есть);
  *  нужно обновление → окно с прогрессом (PendingUpdate), иначе сразу запуск.

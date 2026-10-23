@@ -21,7 +21,7 @@
     </Style>
 
     <Style Selector="Button.play">
-      <Setter Property="Width" Value="236" />
+      <Setter Property="HorizontalAlignment" Value="Stretch" />
       <Setter Property="Height" Value="60" />
       <Setter Property="CornerRadius" Value="4" />
       <Setter Property="FontSize" Value="20" />
@@ -51,6 +51,33 @@
     <Style Selector="Button.play:disabled /template/ ContentPresenter#PART_ContentPresenter">
       <Setter Property="Background" Value="#2A2E36" />
       <Setter Property="Foreground" Value="#6B7280" />
+    </Style>
+
+    <Style Selector="Button.alt">
+      <Setter Property="HorizontalAlignment" Value="Stretch" />
+      <Setter Property="Height" Value="60" />
+      <Setter Property="CornerRadius" Value="4" />
+      <Setter Property="FontSize" Value="16" />
+      <Setter Property="FontWeight" Value="Bold" />
+      <Setter Property="HorizontalContentAlignment" Value="Center" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+      <Setter Property="Foreground" Value="#F1F3F5" />
+      <Setter Property="Background" Value="#1E2430" />
+      <Setter Property="BorderBrush" Value="#3A4352" />
+      <Setter Property="BorderThickness" Value="1" />
+    </Style>
+    <Style Selector="Button.alt:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="Background" Value="#283040" />
+      <Setter Property="BorderBrush" Value="#5A6578" />
+      <Setter Property="Foreground" Value="White" />
+    </Style>
+    <Style Selector="Button.alt:pressed /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="Background" Value="#1B212B" />
+    </Style>
+    <Style Selector="Button.alt:disabled /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="Background" Value="#1A1E26" />
+      <Setter Property="BorderBrush" Value="#262C37" />
+      <Setter Property="Foreground" Value="#5B6372" />
     </Style>
 
     <Style Selector="Button.link">
@@ -99,12 +126,15 @@
     </Style>
 
     <Style Selector="ComboBox.mode">
-      <Setter Property="Width" Value="230" />
-      <Setter Property="Height" Value="36" />
-      <Setter Property="Background" Value="#1E2430" />
+      <Setter Property="Width" Value="200" />
+      <Setter Property="Height" Value="32" />
+      <Setter Property="MinHeight" Value="32" />
+      <Setter Property="Padding" Value="10,0,0,0" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+      <Setter Property="Background" Value="#151A22" />
       <Setter Property="BorderBrush" Value="#2C3442" />
       <Setter Property="CornerRadius" Value="3" />
-      <Setter Property="FontSize" Value="13" />
+      <Setter Property="FontSize" Value="12" />
     </Style>
   </Window.Styles>
 
@@ -163,13 +193,20 @@
     </Panel>
 
     <Border Grid.Row="1" Background="#151A22" BorderBrush="#1F2632" BorderThickness="0,1" Padding="44,16">
-      <Grid ColumnDefinitions="Auto,*,Auto">
-        <Button Classes="play" Content="{Binding PrimaryText}" IsEnabled="{Binding PrimaryEnabled}" Command="{Binding PrimaryCommand}" />
+      <Grid ColumnDefinitions="390,*">
+        <Panel>
+          <Button Classes="play" Content="{Binding PrimaryText}" IsVisible="{Binding !PlayVisible}"
+                  IsEnabled="{Binding PrimaryEnabled}" Command="{Binding PrimaryCommand}" />
+          <Grid ColumnDefinitions="*,12,150" IsVisible="{Binding PlayVisible}">
+            <Button Classes="play" Content="{Binding T.ChooserCoop}" IsEnabled="{Binding PrimaryEnabled}" Command="{Binding PlayCoopCommand}" />
+            <Button Grid.Column="2" Classes="alt" Content="{Binding T.ChooserVanilla}" IsEnabled="{Binding PrimaryEnabled}" Command="{Binding PlayVanillaCommand}" />
+          </Grid>
+        </Panel>
 
-        <ItemsControl Grid.Column="1" ItemsSource="{Binding Statuses}" Margin="30,0,0,0" VerticalAlignment="Center">
+        <ItemsControl Grid.Column="1" ItemsSource="{Binding Statuses}" Margin="32,0,0,0" VerticalAlignment="Center" ClipToBounds="True">
           <ItemsControl.ItemsPanel>
             <ItemsPanelTemplate>
-              <StackPanel Orientation="Horizontal" Spacing="26" />
+              <StackPanel Orientation="Horizontal" Spacing="24" />
             </ItemsPanelTemplate>
           </ItemsControl.ItemsPanel>
           <ItemsControl.ItemTemplate>
@@ -178,17 +215,13 @@
                 <TextBlock Classes="label" Text="{Binding Label}" />
                 <StackPanel Orientation="Horizontal" Spacing="7">
                   <Ellipse Width="8" Height="8" Fill="{Binding Dot}" VerticalAlignment="Center" />
-                  <TextBlock Text="{Binding Value}" FontSize="14" FontWeight="SemiBold" VerticalAlignment="Center" />
+                  <TextBlock Text="{Binding Value}" FontSize="14" FontWeight="SemiBold" VerticalAlignment="Center"
+                             MaxWidth="210" TextTrimming="CharacterEllipsis" ToolTip.Tip="{Binding Value}" />
                 </StackPanel>
               </StackPanel>
             </DataTemplate>
           </ItemsControl.ItemTemplate>
         </ItemsControl>
-
-        <StackPanel Grid.Column="2" Spacing="5" VerticalAlignment="Center">
-          <TextBlock Classes="label" Text="{Binding T.LaunchMode}" />
-          <ComboBox Classes="mode" ItemsSource="{Binding LaunchModes}" SelectedIndex="{Binding LaunchModeIndex}" IsEnabled="{Binding ModeEnabled}" />
-        </StackPanel>
       </Grid>
     </Border>
 
@@ -220,11 +253,15 @@
       </ItemsControl>
     </StackPanel>
 
-    <Grid Grid.Row="4" ColumnDefinitions="Auto,Auto,Auto,*,Auto" Margin="34,0,44,12">
-      <Button Classes="link" Content="{Binding T.CollectLogs}" Command="{Binding CollectLogsCommand}" />
-      <Button Grid.Column="1" Classes="link" Content="{Binding T.ChooseFolder}" Command="{Binding ChooseFolderCommand}" ToolTip.Tip="{Binding GamePath}" />
-      <Button Grid.Column="2" Classes="link danger" Content="{Binding UninstallText}" IsEnabled="{Binding CanUninstall}" Command="{Binding UninstallCommand}" />
-      <TextBlock Grid.Column="4" Text="{Binding Version, StringFormat='v{0}'}" Foreground="#4C5361" VerticalAlignment="Center" FontSize="12" />
+    <Grid Grid.Row="4" ColumnDefinitions="Auto,Auto,Auto,*,Auto,Auto" Margin="34,0,44,12">
+      <Button Classes="link" Content="{Binding T.CollectLogs}" Command="{Binding CollectLogsCommand}" VerticalAlignment="Center" />
+      <Button Grid.Column="1" Classes="link" Content="{Binding T.ChooseFolder}" Command="{Binding ChooseFolderCommand}" ToolTip.Tip="{Binding GamePath}" VerticalAlignment="Center" />
+      <Button Grid.Column="2" Classes="link danger" Content="{Binding UninstallText}" IsEnabled="{Binding CanUninstall}" Command="{Binding UninstallCommand}" VerticalAlignment="Center" />
+      <StackPanel Grid.Column="4" Orientation="Horizontal" Spacing="10" VerticalAlignment="Center" Margin="0,0,24,0">
+        <TextBlock Text="{Binding T.LaunchMode}" FontSize="13" Foreground="#8B93A1" VerticalAlignment="Center" />
+        <ComboBox Classes="mode" ItemsSource="{Binding LaunchModes}" SelectedIndex="{Binding LaunchModeIndex}" IsEnabled="{Binding ModeEnabled}" />
+      </StackPanel>
+      <TextBlock Grid.Column="5" Text="{Binding Version, StringFormat='v{0}'}" Foreground="#4C5361" VerticalAlignment="Center" FontSize="12" />
     </Grid>
   </Grid>
 </Window>

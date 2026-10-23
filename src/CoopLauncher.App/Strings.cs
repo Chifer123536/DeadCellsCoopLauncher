@@ -67,6 +67,7 @@ public sealed record Strings(
     string ChooserModMissing,
     string ChooserNeedsRepair,
     string ChooserUpdateFailed,
+    string LaunchingSteam,
     string Settings,
     string Steps)
 {
@@ -74,13 +75,13 @@ public sealed record Strings(
         "ru",
         "Кооператив с друзьями через Steam",
         "Игра", ".NET 10", "Visual C++", "Мод кооператива",
-        "не найдена", "установлен", "нужно установить", "не установлен", "есть обновление {0}", "нет связи с сервером обновлений",
+        "не найдена", "установлен", "нужно установить", "не установлен", "обновление {0}", "нет связи с сервером обновлений",
         "Установить", "Обновить", "Починить", "Играть", "Указать папку игры", "Закройте игру", "Подождите…",
         "Запуск из Steam", "Спрашивать", "Сразу кооператив", "Сразу обычная игра",
         "Собрать логи", "Удалить мод", "Точно удалить? Нажмите ещё раз",
         "Как играть с другом",
         "Друг тоже ставит мод через этот лаунчер.",
-        "Жмёте «Играть» в Steam и выбираете «Играть в кооп».",
+        "Жмёте «Играть в кооп» здесь или «Играть» в Steam.",
         "Хост: Кооператив → Создать лобби → Пригласить друга (или Shift+Tab в Steam).",
         "Друг принимает приглашение в Steam — игра сама запустится в кооперативе и зайдёт в лобби.",
         "Проверка…", "Установка .NET 10…", "Установка Visual C++…", "Загрузка DCCM…", "Загрузка мода…", "Распаковка…", "Замена файлов…", "Настройка запуска из Steam…",
@@ -109,6 +110,7 @@ public sealed record Strings(
         "Мод кооператива не установлен или повреждён. Откройте лаунчер Dead Cells Co-op и нажмите «Починить». Обычная игра доступна.",
         "Для кооператива не хватает .NET 10 или Visual C++. Откройте лаунчер Dead Cells Co-op и нажмите «Починить».",
         "Мод не обновился. {0} «Играть в кооп» запустит текущую версию — у друга должна быть такая же.",
+        "Запуск через Steam…",
         "Настройки",
         "Шаги");
 
@@ -116,13 +118,13 @@ public sealed record Strings(
         "en",
         "Co-op with your Steam friends",
         "Game", ".NET 10", "Visual C++", "Co-op mod",
-        "not found", "installed", "needs install", "not installed", "update {0} available", "update server unreachable",
+        "not found", "installed", "needs install", "not installed", "update {0}", "update server unreachable",
         "Install", "Update", "Repair", "Play", "Choose game folder", "Close the game", "Please wait…",
         "Launch from Steam", "Ask every time", "Always co-op", "Always normal game",
         "Collect logs", "Uninstall mod", "Really uninstall? Click again",
         "How to play with a friend",
         "Your friend installs the mod with this launcher too.",
-        "Both press \"Play\" in Steam and choose \"Play co-op\".",
+        "Press \"Play co-op\" here or \"Play\" in Steam.",
         "Host: Co-op → Create lobby → Invite a friend (or Shift+Tab in Steam).",
         "Your friend accepts the Steam invite — the game starts in co-op and joins the lobby.",
         "Checking…", "Installing .NET 10…", "Installing Visual C++…", "Downloading DCCM…", "Downloading the mod…", "Unpacking…", "Replacing files…", "Setting up the Steam launch…",
@@ -151,6 +153,7 @@ public sealed record Strings(
         "The co-op mod is missing or damaged. Open the Dead Cells Co-op launcher and press \"Repair\". The normal game still works.",
         "Co-op needs .NET 10 and Visual C++. Open the Dead Cells Co-op launcher and press \"Repair\".",
         "The mod was not updated. {0} \"Play co-op\" starts the current version — your friend needs the same one.",
+        "Starting through Steam…",
         "Settings",
         "Steps");
 

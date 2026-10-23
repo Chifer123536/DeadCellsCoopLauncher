@@ -72,6 +72,7 @@ public sealed partial class MainViewModel : ObservableObject
     [ObservableProperty] string[] _launchModes = [];
     [ObservableProperty] StepTile[] _steps = [];
     [ObservableProperty] bool _isRu;
+    [ObservableProperty] bool _playVisible;
 
     public ObservableCollection<StatusLine> Statuses { get; } = [];
     public string Version => AppInfo.Version;
@@ -218,6 +219,7 @@ public sealed partial class MainViewModel : ObservableObject
         };
         if (Busy)
             PrimaryText = t.Working;
+        PlayVisible = _action == PrimaryAction.Play;
         PrimaryEnabled = !Busy && _action switch
         {
             PrimaryAction.CloseGame => false,
@@ -296,14 +298,37 @@ public sealed partial class MainViewModel : ObservableObject
                 await ChooseFolderAsync();
                 break;
             case PrimaryAction.Play:
-                Message = "";
-                Process.Start(new ProcessStartInfo("steam://rungameid/" + GameLocator.AppId) { UseShellExecute = true });
+                LaunchViaSteam(LaunchMode.Coop);
                 break;
             case PrimaryAction.Install:
             case PrimaryAction.Update:
             case PrimaryAction.Repair:
                 await RunInstallAsync();
                 break;
+        }
+    }
+
+    [RelayCommand]
+    void PlayCoop() => LaunchViaSteam(LaunchMode.Coop);
+
+    [RelayCommand]
+    void PlayVanilla() => LaunchViaSteam(LaunchMode.Vanilla);
+
+    void LaunchViaSteam(LaunchMode mode)
+    {
+        var layout = _layout;
+        if (layout == null || Busy || _action != PrimaryAction.Play)
+            return;
+        try
+        {
+            LaunchRequestStore.Write(layout.ChooserDir, mode, DateTimeOffset.UtcNow);
+            Process.Start(new ProcessStartInfo("steam://rungameid/" + GameLocator.AppId) { UseShellExecute = true });
+            LauncherLog.Info($"Launch {mode} via Steam");
+            ShowInfo(T.LaunchingSteam);
+        }
+        catch (Exception ex)
+        {
+            ShowError(string.Format(T.ErrGeneric, ex.Message), ex);
         }
     }
 
@@ -549,7 +574,9 @@ public sealed partial class MainViewModel : ObservableObject
  *  Старт: чистка .old после самообновления, язык (настройки → язык Windows), поиск игры
  *  (ручной путь → Steam), манифест (15 с), осмотр установки. Дальше переосмотр раз в 3 с, пока не занято.
  *  Главная кнопка по состоянию: нет игры → выбрать папку; игра запущена → «Закройте игру»;
- *  мода нет → Установить; манифест новее → Обновить; нет .NET/VC++ или exe сброшен Steam → Починить; иначе Играть.
+ *  мода нет → Установить; манифест новее → Обновить; нет .NET/VC++ или exe сброшен Steam → Починить;
+ *  иначе две кнопки «Играть в кооп» / «Обычная игра»: выбор пишется в next-launch.json и игра стартует через
+ *  steam://rungameid (первый вариант запуска Steam = deadcells.exe), окно выбора забирает его и не спрашивает снова.
  *  Установка: .NET и VC++ (UAC), затем ModInstaller в фоне; без манифеста — только починка exe.
  *  Режим запуска и язык пишутся в coremod/coop-chooser/settings.json (их читает окно выбора в Steam).
  *  Удаление — двойным нажатием за 6 с, с предупреждением о чужих модах.
