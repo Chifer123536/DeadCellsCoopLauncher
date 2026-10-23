@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "mod": {
+    "version": "0.8.91-coop.2",
+    "url": "https://github.com/Chifer123536/DeadCellsMultiplayerMod/releases/download/v0.8.91-coop.2/DeadCellsMultiplayerMod-0.8.91-coop.2.zip",
+    "sha256": "29ba39ea5f3939019d4140584b41e122da1fdb48145c2c0095b5634be78c1e5a",
+    "size": 841127
+  },
+  "dccm": {
+    "version": "35.14.1",
+    "url": "https://github.com/dead-cells-core-modding/core/releases/download/v35.14.1/win-x64-no-mdk.zip",
+    "sha256": "6cb81871c6f74d0b876cc9dedb5ac7738b2a19de88a1e8877908d9af7d7d9904",
+    "size": 33899015
+  },
+  "launcher": {
+    "version": "1.0.0",
+    "url": "https://github.com/Chifer123536/DeadCellsCoopLauncher/releases/download/v1.0.0/DeadCellsCoopLauncher.exe",
+    "sha256": "c1455f5b6a16e0850067d20b6ac96918e8e9c97d0ee8f7db85db6f072f4ad4fa",
+    "size": 47397901
+  },
+  "gameBuildIds": [
+    "23762174"
+  ],
+  "notes": "Mod 0.8.91-coop.2, launcher 1.0.0"
+}

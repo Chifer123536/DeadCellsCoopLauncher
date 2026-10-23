@@ -1,0 +1,112 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="CoopLauncher.App.ChooserWindow"
+        Title="Dead Cells"
+        Width="470" SizeToContent="Height" CanResize="False"
+        SystemDecorations="None" WindowStartupLocation="CenterScreen"
+        Background="#1E2128">
+  <Window.Styles>
+    <Style Selector="TextBlock">
+      <Setter Property="Foreground" Value="#DCDEDF" />
+    </Style>
+    <Style Selector="Border.row">
+      <Setter Property="Background" Value="#2A2E35" />
+      <Setter Property="Padding" Value="12,10" />
+      <Setter Property="Cursor" Value="Hand" />
+    </Style>
+    <Style Selector="Border.row:pointerover">
+      <Setter Property="Background" Value="#353A43" />
+    </Style>
+    <Style Selector="Border.row.selected">
+      <Setter Property="Background" Value="#3A3F48" />
+    </Style>
+    <Style Selector="Button.steam">
+      <Setter Property="Width" Value="112" />
+      <Setter Property="Height" Value="36" />
+      <Setter Property="CornerRadius" Value="2" />
+      <Setter Property="HorizontalContentAlignment" Value="Center" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+      <Setter Property="FontSize" Value="15" />
+    </Style>
+    <Style Selector="Button.play">
+      <Setter Property="Background">
+        <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,0%">
+          <GradientStop Color="#47BFFF" Offset="0" />
+          <GradientStop Color="#1A44C2" Offset="1" />
+        </LinearGradientBrush>
+      </Setter>
+      <Setter Property="Foreground" Value="White" />
+    </Style>
+    <Style Selector="Button.play:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="Background">
+        <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,0%">
+          <GradientStop Color="#66CCFF" Offset="0" />
+          <GradientStop Color="#2D5BE0" Offset="1" />
+        </LinearGradientBrush>
+      </Setter>
+      <Setter Property="Foreground" Value="White" />
+    </Style>
+    <Style Selector="Button.grey">
+      <Setter Property="Background" Value="#3D4450" />
+      <Setter Property="Foreground" Value="#DFE3E6" />
+    </Style>
+    <Style Selector="Button.grey:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="Background" Value="#4C5563" />
+      <Setter Property="Foreground" Value="White" />
+    </Style>
+    <Style Selector="Button.close">
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="Foreground" Value="#8B929A" />
+      <Setter Property="Padding" Value="8,2" />
+      <Setter Property="FontSize" Value="15" />
+    </Style>
+    <Style Selector="Button.close:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="Foreground" Value="White" />
+    </Style>
+  </Window.Styles>
+
+  <Border BorderBrush="#3A3F48" BorderThickness="1">
+    <Border.Background>
+      <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+        <GradientStop Color="#2C3038" Offset="0" />
+        <GradientStop Color="#1E2128" Offset="1" />
+      </LinearGradientBrush>
+    </Border.Background>
+    <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" Margin="18,10,18,18">
+      <Grid>
+        <TextBlock Text="Dead Cells" FontSize="22" FontWeight="Bold" Foreground="White" Margin="0,14,0,0" />
+        <Button x:Name="CloseButton" Classes="close" Content="✕" HorizontalAlignment="Right" VerticalAlignment="Top" />
+      </Grid>
+      <TextBlock Grid.Row="1" x:Name="HeaderText" FontSize="12" FontWeight="Bold" Margin="2,22,0,8" />
+      <Border Grid.Row="2" Background="#15171C" BorderBrush="#0E1013" BorderThickness="1" Padding="14,12" MinHeight="170">
+        <StackPanel Spacing="8">
+          <Border x:Name="CoopRow" Classes="row">
+            <StackPanel Orientation="Horizontal" Spacing="10">
+              <Panel Width="14" Height="14" VerticalAlignment="Center">
+                <Ellipse x:Name="CoopRing" Width="14" Height="14" />
+                <Ellipse x:Name="CoopDot" Width="5" Height="5" Fill="White" />
+              </Panel>
+              <TextBlock x:Name="CoopText" FontSize="13" VerticalAlignment="Center" />
+            </StackPanel>
+          </Border>
+          <Border x:Name="VanillaRow" Classes="row">
+            <StackPanel Orientation="Horizontal" Spacing="10">
+              <Panel Width="14" Height="14" VerticalAlignment="Center">
+                <Ellipse x:Name="VanillaRing" Width="14" Height="14" />
+                <Ellipse x:Name="VanillaDot" Width="5" Height="5" Fill="White" />
+              </Panel>
+              <TextBlock x:Name="VanillaText" FontSize="13" VerticalAlignment="Center" />
+            </StackPanel>
+          </Border>
+        </StackPanel>
+      </Border>
+      <CheckBox Grid.Row="3" x:Name="AlwaysBox" Margin="2,12,0,0" FontSize="13" Foreground="#DCDEDF" />
+      <TextBlock Grid.Row="4" x:Name="HintText" TextWrapping="Wrap" FontSize="12" Foreground="#8B929A" Margin="2,6,0,0" />
+      <StackPanel Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="14" Margin="0,18,0,0">
+        <Button x:Name="PlayButton" Classes="steam play" />
+        <Button x:Name="CancelButton" Classes="steam grey" />
+      </StackPanel>
+    </Grid>
+  </Border>
+</Window>
