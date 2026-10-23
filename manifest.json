@@ -1,10 +1,10 @@
 {
   "schema": 1,
   "mod": {
-    "version": "0.8.91-coop.3",
-    "url": "https://github.com/Chifer123536/DeadCellsMultiplayerMod/releases/download/v0.8.91-coop.3/DeadCellsMultiplayerMod-0.8.91-coop.3.zip",
-    "sha256": "63b9c6c239b2ad0fe55b30c60aa90c1675364902a2ef8c31350671937f9eec1d",
-    "size": 869532
+    "version": "0.8.91-coop.4",
+    "url": "https://github.com/Chifer123536/DeadCellsMultiplayerMod/releases/download/v0.8.91-coop.4/DeadCellsMultiplayerMod-0.8.91-coop.4.zip",
+    "sha256": "706d40448899aab23cf895e905fe09e0e19057bc1e961b80edc1312fcccf1f5f",
+    "size": 872703
   },
   "dccm": {
     "version": "35.14.1",
@@ -13,13 +13,13 @@
     "size": 33899015
   },
   "launcher": {
-    "version": "1.1.1",
-    "url": "https://github.com/Chifer123536/DeadCellsCoopLauncher/releases/download/v1.1.1/DeadCellsCoopLauncher.exe",
-    "sha256": "10f0a7d1885a39a2031bdf8f5e3519080cb9f67a3a444edb84d5a9b1aeaedfd0",
-    "size": 47412872
+    "version": "1.1.2",
+    "url": "https://github.com/Chifer123536/DeadCellsCoopLauncher/releases/download/v1.1.2/DeadCellsCoopLauncher.exe",
+    "sha256": "c43dcc3405f67c54bb4ffc80cd5c63ba68489a304d976b43e5c9b83ab29394d4",
+    "size": 47883914
   },
   "gameBuildIds": [
     "23762174"
   ],
-  "notes": "Mod 0.8.91-coop.3, launcher 1.1.1"
+  "notes": "Mod 0.8.91-coop.4, launcher 1.1.2"
 }
