@@ -12,9 +12,9 @@ public partial class App : Application
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            if (ChooserLauncher.Context is { } chooser)
+            if (ChooserLauncher.Session is { } chooser)
             {
-                desktop.MainWindow = new ChooserWindow(chooser);
+                desktop.MainWindow = new ChooserWindow(new ChooserViewModel(chooser));
             }
             else
             {
@@ -31,7 +31,7 @@ public partial class App : Application
  * ═══════════════════════════════════════
  *  APP — КАК РАБОТАЕТ
  * ═══════════════════════════════════════
- *  Fluent, тёмная тема. Режим окна выбора (exe запущен как deadcells.exe) → ChooserWindow,
+ *  Fluent, тёмная тема. Режим окна выбора (exe запущен как deadcells.exe) → ChooserWindow + ChooserViewModel,
  *  иначе лаунчер MainWindow с MainViewModel; Shutdown нужен самообновлению.
  * ═══════════════════════════════════════
 */

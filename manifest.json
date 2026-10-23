@@ -13,13 +13,13 @@
     "size": 33899015
   },
   "launcher": {
-    "version": "1.0.0",
-    "url": "https://github.com/Chifer123536/DeadCellsCoopLauncher/releases/download/v1.0.0/DeadCellsCoopLauncher.exe",
-    "sha256": "c1455f5b6a16e0850067d20b6ac96918e8e9c97d0ee8f7db85db6f072f4ad4fa",
-    "size": 47397901
+    "version": "1.1.0",
+    "url": "https://github.com/Chifer123536/DeadCellsCoopLauncher/releases/download/v1.1.0/DeadCellsCoopLauncher.exe",
+    "sha256": "f601dd397cd2eec91e3ad26bba887c2f59f2b55e6c626b9008790430d4ef1cd8",
+    "size": 47410821
   },
   "gameBuildIds": [
     "23762174"
   ],
-  "notes": "Mod 0.8.91-coop.2, launcher 1.0.0"
+  "notes": "Mod 0.8.91-coop.2, launcher 1.1.0"
 }

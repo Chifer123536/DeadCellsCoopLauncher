@@ -1,6 +1,5 @@
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Reflection;
 using Avalonia.Media;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -41,7 +40,7 @@ public sealed partial class MainViewModel : ObservableObject
 {
     static readonly IBrush InfoBrush = new SolidColorBrush(Color.Parse("#8FD18F"));
     static readonly IBrush ErrorBrush = new SolidColorBrush(Color.Parse("#E06C64"));
-    static readonly HttpClient Http = CreateHttp();
+    static HttpClient Http => AppInfo.Http;
 
     LauncherSettings _settings = LauncherSettings.Default;
     GameInstall? _game;
@@ -75,7 +74,7 @@ public sealed partial class MainViewModel : ObservableObject
     [ObservableProperty] bool _isRu;
 
     public ObservableCollection<StatusLine> Statuses { get; } = [];
-    public string Version { get; } = CurrentVersion();
+    public string Version => AppInfo.Version;
     public Func<Task<string?>>? PickFolder { get; set; }
     public Action? Shutdown { get; set; }
     public bool HasWarning => Warning.Length > 0;
@@ -374,6 +373,10 @@ public sealed partial class MainViewModel : ObservableObject
         {
             ShowError(t.ErrNoVanilla, ex);
         }
+        catch (InstallException ex) when (ex.Code == "game-files")
+        {
+            ShowError(t.ErrGameFiles, ex);
+        }
         catch (OperationCanceledException ex)
         {
             ShowError(t.ErrUac, ex);
@@ -536,20 +539,6 @@ public sealed partial class MainViewModel : ObservableObject
         if (exe == null || File.Exists(Path.ChangeExtension(exe, ".dll")))
             throw new InvalidOperationException("Run the published single-file launcher to install the Steam chooser");
         return new FileStream(exe, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete);
-    }
-
-    static HttpClient CreateHttp()
-    {
-        var http = new HttpClient { Timeout = TimeSpan.FromMinutes(30) };
-        http.DefaultRequestHeaders.UserAgent.ParseAdd("DeadCellsCoopLauncher/" + CurrentVersion());
-        return http;
-    }
-
-    static string CurrentVersion()
-    {
-        var info = typeof(MainViewModel).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? "0.0.0";
-        var plus = info.IndexOf('+');
-        return plus >= 0 ? info[..plus] : info;
     }
 }
 

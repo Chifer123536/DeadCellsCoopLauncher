@@ -225,6 +225,29 @@ public sealed class ModInstallerTests : IDisposable
     }
 
     [Fact]
+    public async Task UpdateFromRunningChooserKeepsExe()
+    {
+        var dccm = DccmZip("35.14.1");
+        await Install(Manifest(ModZip("1.0.0", "1.0.0"), dccm));
+        var exeBefore = File.ReadAllBytes(_layout.GameExe);
+        var stamp = File.GetLastWriteTimeUtc(_layout.GameExe);
+
+        using (File.Open(_layout.GameExe, FileMode.Open, FileAccess.Read, FileShare.Read))
+            await ModInstaller.InstallAsync(_layout, Manifest(ModZip("1.0.1", "1.0.1"), dccm), _downloader, _cache, null, null, CancellationToken.None);
+
+        Assert.Equal("1.0.1", ModInstaller.ReadModVersion(_layout.ModDir));
+        Assert.Equal(exeBefore, File.ReadAllBytes(_layout.GameExe));
+        Assert.Equal(stamp, File.GetLastWriteTimeUtc(_layout.GameExe));
+        Assert.Equal("vanilla-1", File.ReadAllText(_layout.VanillaExe));
+
+        File.Delete(_layout.VanillaExe);
+        var error = await Assert.ThrowsAsync<InstallException>(() =>
+            ModInstaller.InstallAsync(_layout, Manifest(ModZip("1.0.2", "1.0.2"), dccm), _downloader, _cache, null, null, CancellationToken.None));
+        Assert.Equal("no-vanilla", error.Code);
+        Assert.Equal("1.0.1", ModInstaller.ReadModVersion(_layout.ModDir));
+    }
+
+    [Fact]
     public async Task WrongChecksumNeverInstalls()
     {
         var dccm = DccmZip("35.14.1");
@@ -265,6 +288,7 @@ public sealed class ModInstallerTests : IDisposable
  *  Downloader их не перекачивает. «Окно выбора» — сама тестовая сборка (Product = Dead Cells Co-op),
  *  «оригинальный exe» — текстовый файл без VersionInfo.
  *  Цикл: установка → починка после «проверки Steam» → обновление мода (config и чужие моды целы) →
- *  битый архив с откатом → удаление с возвратом оригинала. Плюс: подмена sha, нет оригинала, удаление без бэкапа.
+ *  битый архив с откатом → удаление с возвратом оригинала. Плюс: подмена sha, нет оригинала, удаление без бэкапа,
+ *  обновление из окна выбора (deadcells.exe открыт и не меняется, без оригинала — отказ до замены файлов).
  * ═══════════════════════════════════════
 */

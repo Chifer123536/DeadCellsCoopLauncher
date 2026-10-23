@@ -24,7 +24,7 @@ public static class GameProcess
             {
                 using (process)
                 {
-                    if (BelongsTo(process, layout.GameDir))
+                    if (process.Id != Environment.ProcessId && BelongsTo(process, layout.GameDir))
                         return true;
                 }
             }
@@ -56,7 +56,8 @@ public static class GameProcess
  *  GAME PROCESS — КАК РАБОТАЕТ
  * ═══════════════════════════════════════
  *  Игра запущена, если есть процесс deadcells / deadcells_gl / deadcells.vanilla / DeadCellsModding
- *  из папки этой игры. Путь не прочитать (другой пользователь, защита) → считаем, что запущена:
+ *  из папки этой игры, кроме своего процесса (окно выбора само работает как deadcells.exe).
+ *  Путь не прочитать (другой пользователь, защита) → считаем, что запущена:
  *  лучше попросить закрыть игру, чем менять файлы под живым процессом.
  * ═══════════════════════════════════════
 */

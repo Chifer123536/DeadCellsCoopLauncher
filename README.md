@@ -7,7 +7,7 @@
 1. Скачайте `DeadCellsCoopLauncher.exe` со страницы [Releases](https://github.com/Chifer123536/DeadCellsCoopLauncher/releases/latest).
 2. Запустите. Если Windows покажет SmartScreen — «Подробнее» → «Выполнить в любом случае» (exe не подписан).
 3. Нажмите «Установить». Лаунчер сам найдёт игру, поставит .NET 10, Visual C++, DCCM и мод.
-4. Жмите «Играть» в лаунчере или в Steam — появится выбор: **кооператив** или **обычная игра**.
+4. Жмите «Играть» в Steam — откроется окно лаунчера: **«Играть в кооп»** или **«Обычная игра»**.
 
 ## Как играть с другом
 
@@ -18,9 +18,11 @@
 
 ## Что делает лаунчер
 
-- Вместо `deadcells.exe` ставит окно выбора режима; оригинал хранится как `deadcells.vanilla.exe`.
-  «Обычная игра» запускает его без модов. «Всегда использовать этот вариант» убирает вопрос,
-  Shift при запуске возвращает его. Принятый инвайт сразу открывает кооператив.
+- Вместо `deadcells.exe` ставит свою копию — по «Играть» в Steam открывается окно выбора режима;
+  оригинал хранится как `deadcells.vanilla.exe`, «Обычная игра» запускает его без модов и без сети.
+  «Запомнить выбор» убирает вопрос, Shift при запуске возвращает окно. Принятый инвайт сразу открывает кооператив.
+- Перед каждым запуском кооператива из Steam тихо проверяет `manifest.json` и, если вышла новая версия мода,
+  обновляет его с прогрессом в окне. Нет сети — запускает установленную версию.
 - После обновления игры или «Проверки целостности» в Steam — кнопка «Починить».
 - Сохранения кооператива отдельные (`MSave`), одиночные не трогаются.
 - «Собрать логи» кладёт zip на рабочий стол — пришлите его, если что-то сломалось.
@@ -44,4 +46,4 @@ dotnet publish src/CoopLauncher.App/CoopLauncher.App.csproj -c Release -o artifa
 
 ---
 
-**EN:** one-click installer for Dead Cells co-op over Steam. Download the exe from Releases, press Install, then Play and pick Co-op. The host creates a lobby and invites a friend through Steam; accepting the invite starts the game straight in co-op.
+**EN:** one-click installer for Dead Cells co-op over Steam. Download the exe from Releases, press Install, then press Play in Steam and pick "Play co-op". Co-op launches from Steam update the mod automatically. The host creates a lobby and invites a friend through Steam; accepting the invite starts the game straight in co-op.

@@ -122,7 +122,7 @@ public static class ModInstaller
         LauncherManifest manifest,
         Downloader downloader,
         string cacheDir,
-        Func<Stream> chooserSource,
+        Func<Stream>? chooserSource,
         IProgress<InstallProgress>? progress,
         CancellationToken ct)
     {
@@ -131,6 +131,8 @@ public static class ModInstaller
             throw new GameRunningException();
         if (!File.Exists(layout.GlExe))
             throw new InstallException("game-files", "deadcells_gl.exe is missing; verify the game files in Steam");
+        if (chooserSource == null && ExeInspector.Classify(layout.VanillaExe) != ExeKind.Vanilla)
+            throw new InstallException("no-vanilla", "The original deadcells.exe is missing; verify the game files in Steam");
 
         var before = Inspect(layout);
         var needDccm = before.NeedsDccm(manifest);
@@ -206,8 +208,11 @@ public static class ModInstaller
                 if (modRoot != null)
                     swap.Replace(modRoot, layout.ModDir);
 
-                progress?.Report(new InstallProgress(InstallStage.ConfiguringExe, null));
-                EnsureChooser(layout, chooserSource);
+                if (chooserSource != null)
+                {
+                    progress?.Report(new InstallProgress(InstallStage.ConfiguringExe, null));
+                    EnsureChooser(layout, chooserSource);
+                }
                 swap.Commit();
             }
             catch
@@ -227,7 +232,7 @@ public static class ModInstaller
             manifest.Dccm.Version,
             needDccm ? manifest.Dccm.Sha256.ToLowerInvariant() : before.State?.DccmSha256 ?? manifest.Dccm.Sha256.ToLowerInvariant(),
             await Downloader.HashFileAsync(layout.VanillaExe, ct).ConfigureAwait(false),
-            await Downloader.HashFileAsync(layout.ChooserStub, ct).ConfigureAwait(false),
+            await Downloader.HashFileAsync(File.Exists(layout.ChooserStub) ? layout.ChooserStub : layout.GameExe, ct).ConfigureAwait(false),
             DateTimeOffset.UtcNow);
         InstallStateStore.Write(layout, state);
         PruneCache(cacheDir, dccmZip ?? Path.Combine(cacheDir, $"dccm-{SafeName(manifest.Dccm.Version)}.zip"), modZip ?? Path.Combine(cacheDir, $"mod-{SafeName(manifest.Mod.Version)}.zip"));
@@ -355,6 +360,8 @@ sealed class SyncProgress<T>(Action<T> handler) : IProgress<T>
  *       и чужие моды не трогаются. Ошибка → откат всего.
  *    4. EnsureChooser: оригинальный exe (в т.ч. новый после апдейта игры/проверки Steam) → deadcells.vanilla.exe,
  *       окно выбора → coremod/coop-chooser/deadcells.exe и копией → deadcells.exe. Без оригинала не ставим.
+ *       chooserSource = null (обновление из окна выбора, которое само работает как deadcells.exe) →
+ *       exe не трогается, но оригинал в deadcells.vanilla.exe обязан быть.
  *    5. coop-launcher.json, чистка старых архивов в кэше.
  *  Uninstall: оригинал → deadcells.exe, удаление coremod. Оригинала нет → OriginalExeRestored=false
  *  (нужна «Проверка целостности» в Steam). Сохранения лежат в Steam userdata и не удаляются.
